@@ -1,3 +1,7 @@
+# _author__  = Richard Whyte
+# __version__ = 1.1
+# __email__   = Richard.whyte@elev.ga.ntig.se
+
 import pygame
 
 # Initialize Pygame
