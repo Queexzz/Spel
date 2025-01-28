@@ -1,5 +1,5 @@
 # _author__  = Richard Whyte
-# __version__ = 1.1
+# __version__ = 1.2
 # __email__   = Richard.whyte@elev.ga.ntig.se
 
 import pygame
@@ -11,7 +11,8 @@ pygame.init()
 WIDTH, HEIGHT = 800, 600
 CHICKEN_SIZE = 50
 CAR_WIDTH, CAR_HEIGHT = 100, 50
-MOVE_SPEED = 3  # Speed of the chicken's movement
+MOVE_SPEED = 2  # Speed of the chicken's movement
+CAR_SPEED = 5  # Speed of the car's movement
 
 # Colors
 YELLOW = (255, 255, 0)
@@ -45,10 +46,17 @@ class Chicken:
 # Car class
 class Car:
     def __init__(self):
-        self.rect = pygame.Rect(WIDTH // 2, HEIGHT // 2, CAR_WIDTH, CAR_HEIGHT)
+        self.rect = pygame.Rect(WIDTH, HEIGHT // 2, CAR_WIDTH, CAR_HEIGHT)  # Start off-screen to the right
 
     def draw(self):
         pygame.draw.rect(screen, RED, self.rect)
+
+    def move(self):
+        # Move the car left
+        self.rect.x -= CAR_SPEED
+        # Reset the car's position to the right side of the screen if it goes off-screen
+        if self.rect.x < -CAR_WIDTH:
+            self.rect.x = WIDTH
 
 # Main function
 def main():
@@ -76,6 +84,7 @@ def main():
             dy = MOVE_SPEED  # Move down
 
         chicken.move(dx, dy)
+        car.move()  # Update the car's position
 
         screen.fill((255, 255, 255))  # Fill the screen with white
         chicken.draw()
