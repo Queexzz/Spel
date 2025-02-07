@@ -1,5 +1,5 @@
 # _author__  = Richard Whyte
-# __version__ = 1.2
+# __version__ = 1.3
 # __email__   = Richard.whyte@elev.ga.ntig.se
 
 import pygame
@@ -8,7 +8,7 @@ import pygame
 pygame.init()
 
 # Constants
-WIDTH, HEIGHT = 800, 600
+WIDTH, HEIGHT = 1920, 1080
 CHICKEN_SIZE = 50
 CAR_WIDTH, CAR_HEIGHT = 100, 50
 MOVE_SPEED = 2  # Speed of the chicken's movement
@@ -17,6 +17,10 @@ CAR_SPEED = 5  # Speed of the car's movement
 # Colors
 YELLOW = (255, 255, 0)
 RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+
 
 # Set up the display
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -86,7 +90,7 @@ def main():
         chicken.move(dx, dy)
         car.move()  # Update the car's position
 
-        screen.fill((255, 255, 255))  # Fill the screen with white
+        screen.fill((0, 255, 0))  # Fill the screen with white
         chicken.draw()
         car.draw()
         pygame.display.flip()
