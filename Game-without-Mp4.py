@@ -1,3 +1,7 @@
+# _author__  = Richard Whyte
+ # __version__ = 1.6
+ # __email__   = Richard.whyte@elev.ga.ntig.se
+
 import pygame
 import random
 
