@@ -94,7 +94,7 @@ class Car:
             x_pos = WIDTH  # Start off-screen to the right
 
         # Create a rectangle for the car's position
-        self .rect = pygame.Rect(
+        self.rect = pygame.Rect(
             x_pos,
             lane_y + (50 - CAR_HEIGHT) // 2,  # Center the car vertically within the lane
             CAR_WIDTH,
@@ -194,7 +194,7 @@ def select_difficulty():
     title = font.render("Select Difficulty", True, WHITE)
     instructions = small_font.render("Use arrow keys to move the chicken!", True, WHITE)
     instructions2 = small_font.render("Avoid the cars and reach the top!", True, WHITE)
-    instructions3 = small_font.render("The chicken will start outside of the screen , hold the up arrow key to see the chicken!", True, WHITE)
+    instructions3 = small_font.render("The chicken will start outside of the screen, hold the up arrow key to see the chicken!", True, WHITE)
     screen.blit(title, (WIDTH // 2 - title.get_width() // 2, 100))  # Center title
     screen.blit(instructions, (WIDTH // 2 - instructions.get_width() // 2, 200))  # Center instructions
     screen.blit(instructions2, (WIDTH // 2 - instructions2.get_width() // 2, 250))  # Center second instruction
@@ -249,6 +249,8 @@ def main():
     clock = pygame.time.Clock()  # Create a clock to control the frame rate
     chicken = Chicken()  # Create a chicken instance
     running = True  # Game loop control variable
+    game_over = False  # Track if the game is over
+    won = False  # Track if the player has won
 
     while running:
         for event in pygame.event.get():
@@ -268,18 +270,10 @@ def main():
         for manager in lane_managers:
             for car in manager.cars:
                 if chicken.rect.colliderect(car.rect):  # Check for collision with cars
-                    result = show_game_over_screen()  # Show game over screen
-                    if result == 'try':
-                        main()  # Restart the game
-                    else:
-                        running = False  # Exit the game loop
+                    game_over = True  # Set game over flag
 
         if chicken.rect.y <= WINNING_Y:  # Check if the chicken reached the winning line
-            result = show_win_screen()  # Show win screen
-            if result == 'play_again':
-                main()  # Restart the game
-            else:
-                running = False  # Exit the game loop
+            won = True  # Set win flag
 
         screen.fill(GREEN)  # Fill the screen with green
         for lane_y in lanes:
@@ -292,6 +286,23 @@ def main():
 
         pygame.display.flip()  # Update the display
         clock.tick(FPS)  # Control the frame rate
+
+        # Handle game over or win state
+        if game_over:
+            result = show_game_over_screen()  # Show game over screen
+            if result == 'try':
+                chicken = Chicken()  # Reset chicken
+                game_over = False  # Reset game over flag
+            else:
+                running = False  # Exit the game loop
+
+        if won:
+            result = show_win_screen()  # Show win screen
+            if result == 'play_again':
+                chicken = Chicken()  # Reset chicken
+                won = False  # Reset win flag
+            else:
+                running = False  # Exit the game loop
 
 if __name__ == "__main__":
     main()  # Start the game
