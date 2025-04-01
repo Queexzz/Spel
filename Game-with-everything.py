@@ -1,6 +1,6 @@
 # _author__  = Richard Whyte
- # __version__ = 1.5
- # __email__   = Richard.whyte@elev.ga.ntig.se
+# __version__ = 1.5
+# __email__   = Richard.whyte@elev.ga.ntig.se
 
 import pygame
 import moviepy.editor as mp
@@ -10,16 +10,16 @@ import os
 # Initialize Pygame
 pygame.init()
 
-# Constents for the game
-WIDTH, HEIGHT = 1920, 1080   # Dimenssions of the game window
-CHICKEN_SIZE = 50  # Size of the chiken
+# Constants for the game
+WIDTH, HEIGHT = 1920, 1080   # Dimensions of the game window
+CHICKEN_SIZE = 50  # Size of the chicken
 CAR_WIDTH, CAR_HEIGHT = 100, 50  # Size of the cars
 FPS = 30  # Frames per second for the game
 ROAD_Y = HEIGHT // 2  # Y-coordinate for the road
 WINNING_Y = 100  # Y-coordinate for the winning line
 LANE_SPACING = 150  # Spacing between lanes
 
-# Difficulty-dependant variables (default values for fallback)
+# Difficulty-dependent variables (default values for fallback)
 MOVE_SPEED = 5  # Speed of the chicken
 CAR_SPEED = 5  # Speed of the cars
 MAX_CARS_PER_LANE = 5  # Maximum number of cars allowed in each lane
@@ -94,7 +94,7 @@ class Car:
             x_pos = WIDTH  # Start off-screen to the right
 
         # Create a rectangle for the car's position
-        self.rect = pygame.Rect(
+        self .rect = pygame.Rect(
             x_pos,
             lane_y + (50 - CAR_HEIGHT) // 2,  # Center the car vertically within the lane
             CAR_WIDTH,
@@ -140,6 +140,48 @@ class LaneManager:
         for car in self.cars:
             car.draw()
 
+# Function to show game over screen
+def show_game_over_screen():
+    screen.fill(BLACK)
+    font = pygame.font.Font(None, 74)
+    text = font.render("Game Over!", True, WHITE)
+    screen.blit(text, (WIDTH // 2 - text.get_width() // 2, HEIGHT // 2 - text.get_height() // 2))
+    retry_text = font.render("Press Enter to try again or Escape to quit", True, WHITE)
+    screen.blit(retry_text, (WIDTH // 2 - retry_text.get_width() // 2, HEIGHT // 2 + 50))
+    pygame.display.flip()
+    
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:  # Press Enter to try again
+                    return 'try'
+                elif event.key == pygame.K_ESCAPE:  # Press Escape to quit
+                    return 'quit'
+
+# Function to show win screen
+def show_win_screen():
+    screen.fill(BLACK)
+    font = pygame.font.Font(None, 74)
+    text = font.render("You Won!", True, WHITE)
+    screen.blit(text, (WIDTH // 2 - text.get_width() // 2, HEIGHT // 2 - text.get_height() // 2))
+    play_again_text = font.render("Press Enter to play again or Escape to quit", True, WHITE)
+    screen.blit(play_again_text, (WIDTH // 2 - play_again_text.get_width() // 2, HEIGHT // 2 + 50))
+    pygame.display.flip()
+    
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:  # Press Enter to play again
+                    return 'play_again'
+                elif event.key == pygame.K_ESCAPE:  # Press Escape to quit
+                    return 'quit'
+
 # Selector screen with clickable buttons
 def select_difficulty():
     global MOVE_SPEED, CAR_SPEED, MAX_CARS_PER_LANE, SPAWN_INTERVAL
@@ -152,11 +194,11 @@ def select_difficulty():
     title = font.render("Select Difficulty", True, WHITE)
     instructions = small_font.render("Use arrow keys to move the chicken!", True, WHITE)
     instructions2 = small_font.render("Avoid the cars and reach the top!", True, WHITE)
-    instructions3 = small_font.render("The chicken will start outside of the screen, hold the up arrow key to see the chicken!", True, WHITE)
+    instructions3 = small_font.render("The chicken will start outside of the screen , hold the up arrow key to see the chicken!", True, WHITE)
     screen.blit(title, (WIDTH // 2 - title.get_width() // 2, 100))  # Center title
     screen.blit(instructions, (WIDTH // 2 - instructions.get_width() // 2, 200))  # Center instructions
     screen.blit(instructions2, (WIDTH // 2 - instructions2.get_width() // 2, 250))  # Center second instruction
-    screen.blit(instructions3, (WIDTH // 2 - instructions2.get_width() // 1, 800))
+    screen.blit(instructions3, (WIDTH // 2 - instructions3.get_width() // 2, 800))
 
     # Button definitions for difficulty selection
     buttons = [
@@ -226,12 +268,18 @@ def main():
         for manager in lane_managers:
             for car in manager.cars:
                 if chicken.rect.colliderect(car.rect):  # Check for collision with cars
-                    print("Game Over! The chicken got hit!")  # Print game over message
-                    running = False  # Exit the game loop
+                    result = show_game_over_screen()  # Show game over screen
+                    if result == 'try':
+                        main()  # Restart the game
+                    else:
+                        running = False  # Exit the game loop
 
         if chicken.rect.y <= WINNING_Y:  # Check if the chicken reached the winning line
-            print("You crossed the road! You win!")  # Print win message
-            running = False  # Exit the game loop
+            result = show_win_screen()  # Show win screen
+            if result == 'play_again':
+                main()  # Restart the game
+            else:
+                running = False  # Exit the game loop
 
         screen.fill(GREEN)  # Fill the screen with green
         for lane_y in lanes:
@@ -247,4 +295,4 @@ def main():
 
 if __name__ == "__main__":
     main()  # Start the game
-    pygame.quit()  # Quit P
+    pygame.quit()  # Quit Pygame
